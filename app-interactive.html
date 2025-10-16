@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>集客消費回饋平台 - 互動式模擬</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            position: relative;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+            background: #1a1a1a;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 32px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #4a90e2;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 12px;
+            padding-top: 8px;
+        }
+
+        .header {
+            background: #4a90e2;
+            color: white;
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header .back-btn {
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .header .cart-badge {
+            position: relative;
+        }
+
+        .header .cart-badge .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+
+        .content::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .bottom-nav {
+            height: 70px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: #f0f0f0;
+        }
+
+        .nav-item.active {
+            color: #4a90e2;
+        }
+
+        .nav-item .badge {
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            background: #ff4444;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 商品卡片 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .product-card:active {
+            transform: scale(0.98);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .product-info {
+            padding: 12px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .product-price {
+            font-size: 20px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .product-price .original {
+            font-size: 14px;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 8px;
+        }
+
+        .product-tag {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 12px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .add-to-cart-btn:active {
+            background: #3a7bc8;
+        }
+
+        /* 購物車 */
+        .cart-item {
+            background: white;
+            padding: 12px;
+            margin: 12px;
+            border-radius: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f0f0f0;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-price {
+            font-size: 16px;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quantity-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn:active {
+            background: #f0f0f0;
+        }
+
+        .quantity-value {
+            font-size: 16px;
+            font-weight: bold;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .cart-summary {
+            background: white;
+            padding: 16px;
+            margin: 12px;
+            border-radius: 12px;
+        }
+
+        .cart-summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .cart-summary-row.total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff6b6b;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+        }
+
+        .checkout-btn {
+            width: calc(100% - 24px);
+            margin: 12px;
+            padding: 16px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .checkout-btn:active {
+            background: #3a7bc8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        /* 訂單 */
+        .order-card {
+            background: white;
+            padding: 16px;
+            margin: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-id {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .order-status {
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .order-status.completed {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .order-status.pending {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .order-items {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .order-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* 會員中心 */
+        .profile-header {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            padding: 24px;
+            color: white;
+        }
+
+        .profile-avatar {
+            width: 64px;
+            height: 64px;
+            background: white;
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .profile-id {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .points-card {
+            background: white;
+            margin: -20px 16px 16px;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .points-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 4px;
+        }
+
+        .points-label {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .menu-list {
+            padding: 16px;
+        }
+
+        .menu-item {
+            background: white;
+            padding: 16px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .menu-item:active {
+            background: #f5f5f5;
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-item-icon {
+            font-size: 24px;
+        }
+
+        .menu-item-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .menu-item-arrow {
+            color: #ccc;
+        }
+
+        /* 商品詳情 */
+        .product-detail-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .product-detail-info {
+            padding: 20px;
+            background: white;
+        }
+
+        .product-detail-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .product-detail-price {
+            font-size: 28px;
+            color: #ff6b6b;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .product-detail-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .product-options {
+            background: white;
+            padding: 20px;
+            margin-top: 8px;
+        }
+
+        .option-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .option-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .option-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .option-btn.active {
+            border-color: #4a90e2;
+            background: #e3f2fd;
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        .product-detail-footer {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 16px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 首頁 */
+        .hero-banner {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            padding: 24px;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .hero-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 商家列表 */
+        .merchant-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .merchant-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .merchant-card:active {
+            transform: scale(0.98);
+        }
+
+        .merchant-header {
+            display: flex;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .merchant-icon {
+            width: 64px;
+            height: 64px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            flex-shrink: 0;
+        }
+
+        .merchant-info {
+            flex: 1;
+        }
+
+        .merchant-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .merchant-category {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .merchant-rating {
+            font-size: 13px;
+            color: #ff6b6b;
+        }
+
+        .merchant-tags {
+            display: flex;
+            gap: 6px;
+            padding: 0 16px 12px;
+        }
+
+        .merchant-tag {
+            font-size: 11px;
+            padding: 4px 10px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+        }
+
+        .merchant-footer {
+            padding: 12px 16px;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            background: white;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .category-tab.active {
+            background: #4a90e2;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* 動畫 */
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+
+        .page.slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+            <div class="status-bar">
+                <span id="current-time">9:41</span>
+                <span>📶 📡 🔋</span>
+            </div>
+
+            <div class="header">
+                <span class="back-btn" onclick="goBack()" style="display: none;">←</span>
+                <span id="page-title">集客消費回饋平台</span>
+                <span class="cart-badge" onclick="navigateTo('cart')">
+                    🛒
+                    <span class="badge" id="cart-count" style="display: none;">0</span>
+                </span>
+            </div>
+
+            <div class="content">
+                <!-- 首頁 - 商家列表 -->
+                <div id="home" class="page active">
+                    <div class="hero-banner">
+                        <div class="hero-title">探索附近商家</div>
+                        <div class="hero-subtitle">消費即享回饋，推薦好友賺更多</div>
+                    </div>
+
+                    <div class="merchant-grid" id="merchant-list"></div>
+                </div>
+
+                <!-- 商家商品頁 -->
+                <div id="merchant-products" class="page">
+                    <div class="category-tabs" id="product-categories"></div>
+                    <div class="product-grid" id="products-list"></div>
+                </div>
+
+                <!-- 商品詳情頁 -->
+                <div id="product-detail" class="page">
+                    <div id="product-detail-content"></div>
+                </div>
+
+                <!-- 購物車 -->
+                <div id="cart" class="page">
+                    <div id="cart-content"></div>
+                </div>
+
+                <!-- 訂單 -->
+                <div id="orders" class="page">
+                    <div id="orders-content"></div>
+                </div>
+
+                <!-- 會員中心 -->
+                <div id="profile" class="page">
+                    <div class="profile-header">
+                        <div class="profile-avatar">👤</div>
+                        <div class="profile-name">張小明</div>
+                        <div class="profile-id">會員編號: JK202401001</div>
+                    </div>
+
+                    <div class="points-card">
+                        <div class="points-value" id="user-points">1,250</div>
+                        <div class="points-label">可用點數</div>
+                    </div>
+
+                    <div class="menu-list">
+                        <div class="menu-item" onclick="showToast('功能開發中')">
+                            <div class="menu-item-left">
+                                <span class="menu-item-icon">💰</span>
+                                <span class="menu-item-text">回饋金收入</span>
+                            </div>
+                            <span class="menu-item-arrow">›</span>
+                        </div>
+                        <div class="menu-item" onclick="showToast('功能開發中')">
+                            <div class="menu-item-left">
+                                <span class="menu-item-icon">📊</span>
+                                <span class="menu-item-text">營收統計</span>
+                            </div>
+                            <span class="menu-item-arrow">›</span>
+                        </div>
+                        <div class="menu-item" onclick="showToast('功能開發中')">
+                            <div class="menu-item-left">
+                                <span class="menu-item-icon">💎</span>
+                                <span class="menu-item-text">推薦好友</span>
+                            </div>
+                            <span class="menu-item-arrow">›</span>
+                        </div>
+                        <div class="menu-item" onclick="showToast('功能開發中')">
+                            <div class="menu-item-left">
+                                <span class="menu-item-icon">⚙️</span>
+                                <span class="menu-item-text">設定</span>
+                            </div>
+                            <span class="menu-item-arrow">›</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item active" data-page="home">
+                    <div class="nav-icon">🏠</div>
+                    <div class="nav-label">首頁</div>
+                </div>
+                <div class="nav-item" data-page="cart">
+                    <div class="nav-icon">🛒</div>
+                    <div class="nav-label">購物車</div>
+                    <span class="badge" id="nav-cart-count" style="display: none;">0</span>
+                </div>
+                <div class="nav-item" data-page="orders">
+                    <div class="nav-icon">📋</div>
+                    <div class="nav-label">訂單</div>
+                </div>
+                <div class="nav-item" data-page="profile">
+                    <div class="nav-icon">👤</div>
+                    <div class="nav-label">會員</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 商家數據
+        const merchants = [
+            {
+                id: 1,
+                name: '阿美越南河粉',
+                category: '越南料理',
+                icon: '🍜',
+                rating: '4.8 ⭐',
+                distance: '500m',
+                deliveryTime: '25-35分',
+                tags: ['外送優惠', '人氣推薦', '滿額免運'],
+                products: [1, 2, 3, 4, 5, 6]
+            },
+            {
+                id: 2,
+                name: '老王滷味小舖',
+                category: '滷味 / 小吃',
+                icon: '🍢',
+                rating: '4.6 ⭐',
+                distance: '800m',
+                deliveryTime: '20-30分',
+                tags: ['新店特惠', '回饋5%'],
+                products: [7, 8, 9, 10]
+            },
+            {
+                id: 3,
+                name: '珍珠奶茶專門店',
+                category: '飲料 / 甜點',
+                icon: '🧋',
+                rating: '4.9 ⭐',
+                distance: '300m',
+                deliveryTime: '15-25分',
+                tags: ['第二杯半價', '人氣商家'],
+                products: [11, 12, 13]
+            },
+            {
+                id: 4,
+                name: '香雞排炸物',
+                category: '炸物 / 速食',
+                icon: '🍗',
+                rating: '4.7 ⭐',
+                distance: '1.2km',
+                deliveryTime: '30-40分',
+                tags: ['外酥內嫩', '現炸美味'],
+                products: [14, 15, 16]
+            },
+            {
+                id: 5,
+                name: '日式壽司專賣',
+                category: '日本料理',
+                icon: '🍣',
+                rating: '4.8 ⭐',
+                distance: '600m',
+                deliveryTime: '25-35分',
+                tags: ['新鮮現做', '回饋10%'],
+                products: [17, 18, 19]
+            },
+            {
+                id: 6,
+                name: '健康輕食坊',
+                category: '沙拉 / 輕食',
+                icon: '🥗',
+                rating: '4.5 ⭐',
+                distance: '900m',
+                deliveryTime: '20-30分',
+                tags: ['健康首選', '低卡美味'],
+                products: [20, 21, 22]
+            }
+        ];
+
+        // 商品數據（包含所有商家的商品）
+        const products = [
+            {
+                id: 1, merchantId: 1, name: '招牌牛肉河粉套餐', price: 180, originalPrice: 220, category: 'combo',
+                image: '🍜', description: '精選牛肉搭配Q彈河粉，附贈飲料與小菜', tag: '人氣精選',
+                options: { size: ['小碗', '中碗', '大碗'], spicy: ['不辣', '微辣', '中辣', '大辣'] }
+            },
+            { id: 2, merchantId: 1, name: '越式春捲套餐', price: 150, originalPrice: 180, category: 'combo',
+                image: '🥙', description: '新鮮蔬菜與蝦仁的完美組合', tag: '特價',
+                options: { quantity: ['2個', '4個', '6個'] }
+            },
+            { id: 3, merchantId: 1, name: '經典炒河粉', price: 120, originalPrice: null, category: 'noodles',
+                image: '🍝', description: '傳統越式炒河粉，口感Q彈', tag: null,
+                options: { spicy: ['不辣', '微辣', '中辣'] }
+            },
+            { id: 4, merchantId: 1, name: '越南咖啡', price: 60, originalPrice: null, category: 'drinks',
+                image: '☕', description: '濃郁香醇的越南滴漏咖啡', tag: null,
+                options: { ice: ['熱', '溫', '去冰', '少冰', '正常冰'] }
+            },
+            { id: 5, merchantId: 1, name: '芒果冰沙', price: 80, originalPrice: null, category: 'drinks',
+                image: '🥭', description: '新鮮芒果製作，香甜可口', tag: '夏日特選',
+                options: { size: ['小杯', '中杯', '大杯'] }
+            },
+            { id: 6, merchantId: 1, name: '海鮮米線', price: 160, originalPrice: 190, category: 'noodles',
+                image: '🦐', description: '豐富海鮮配料，湯頭鮮美', tag: '本週特惠',
+                options: { spicy: ['不辣', '微辣', '中辣', '大辣'] }
+            },
+            // 老王滷味
+            { id: 7, merchantId: 2, name: '滷味拼盤', price: 120, originalPrice: null, category: 'main',
+                image: '🍢', description: '精選豆干、米血、蔬菜等', tag: '人氣推薦',
+                options: { spicy: ['小辣', '中辣', '大辣', '麻辣'] }
+            },
+            { id: 8, merchantId: 2, name: '魯肉飯', price: 50, originalPrice: null, category: 'main',
+                image: '🍚', description: '經典魯肉飯，必點招牌', tag: null,
+                options: { size: ['小碗', '大碗'] }
+            },
+            { id: 9, merchantId: 2, name: '關東煮', price: 80, originalPrice: null, category: 'main',
+                image: '🍲', description: '多種食材任選', tag: null,
+                options: { quantity: ['5樣', '8樣', '10樣'] }
+            },
+            { id: 10, merchantId: 2, name: '黑豆漿', price: 30, originalPrice: null, category: 'drinks',
+                image: '🥤', description: '手工研磨黑豆漿', tag: null,
+                options: { sugar: ['無糖', '微糖', '半糖', '全糖'] }
+            },
+            // 珍珠奶茶專門店
+            { id: 11, merchantId: 3, name: '招牌珍珠奶茶', price: 55, originalPrice: null, category: 'drinks',
+                image: '🧋', description: 'Q彈珍珠配濃郁奶茶', tag: '必點招牌',
+                options: { ice: ['去冰', '微冰', '少冰', '正常冰'], sugar: ['無糖', '微糖', '半糖', '少糖', '全糖'] }
+            },
+            { id: 12, merchantId: 3, name: '黑糖鮮奶', price: 60, originalPrice: null, category: 'drinks',
+                image: '🥛', description: '手炒黑糖加鮮奶', tag: '超人氣',
+                options: { ice: ['去冰', '微冰', '少冰', '正常冰'] }
+            },
+            { id: 13, merchantId: 3, name: '水果茶', price: 65, originalPrice: null, category: 'drinks',
+                image: '🍹', description: '新鮮水果現打', tag: null,
+                options: { ice: ['去冰', '微冰', '少冰', '正常冰'], sugar: ['無糖', '微糖', '半糖', '少糖'] }
+            },
+            // 香雞排炸物
+            { id: 14, merchantId: 4, name: '招牌香雞排', price: 70, originalPrice: null, category: 'fried',
+                image: '🍗', description: '外酥內嫩，現炸熱騰騰', tag: '招牌必點',
+                options: { spicy: ['不辣', '微辣', '辣', '大辣'] }
+            },
+            { id: 15, merchantId: 4, name: '鹽酥雞', price: 80, originalPrice: null, category: 'fried',
+                image: '🍖', description: '經典鹽酥雞，份量十足', tag: null,
+                options: { size: ['小份', '中份', '大份'] }
+            },
+            { id: 16, merchantId: 4, name: '炸薯條', price: 50, originalPrice: null, category: 'fried',
+                image: '🍟', description: '金黃酥脆薯條', tag: null,
+                options: { size: ['小份', '中份', '大份'] }
+            },
+            // 日式壽司
+            { id: 17, merchantId: 5, name: '綜合握壽司', price: 180, originalPrice: null, category: 'sushi',
+                image: '🍣', description: '8貫主廚精選', tag: '主廚推薦',
+                options: { quantity: ['6貫', '8貫', '10貫'] }
+            },
+            { id: 18, merchantId: 5, name: '鮭魚壽司', price: 150, originalPrice: null, category: 'sushi',
+                image: '🐟', description: '新鮮鮭魚', tag: null,
+                options: { quantity: ['4貫', '6貫', '8貫'] }
+            },
+            { id: 19, merchantId: 5, name: '加州捲', price: 120, originalPrice: null, category: 'sushi',
+                image: '🍱', description: '經典加州捲', tag: null,
+                options: { quantity: ['6個', '8個', '12個'] }
+            },
+            // 健康輕食
+            { id: 20, merchantId: 6, name: '凱薩沙拉', price: 120, originalPrice: null, category: 'salad',
+                image: '🥗', description: '新鮮生菜配經典凱薩醬', tag: '健康首選',
+                options: { protein: ['雞胸肉', '鮭魚', '豆腐'] }
+            },
+            { id: 21, merchantId: 6, name: '希臘沙拉', price: 130, originalPrice: null, category: 'salad',
+                image: '🥙', description: '地中海風味', tag: null,
+                options: { dressing: ['油醋醬', '優格醬', '檸檬醬'] }
+            },
+            { id: 22, merchantId: 6, name: '綜合果汁', price: 80, originalPrice: null, category: 'drinks',
+                image: '🥤', description: '當季水果現打', tag: null,
+                options: { size: ['小杯', '中杯', '大杯'] }
+            }
+        ];
+
+        let cart = [];
+        let orders = [];
+        let currentPage = 'home';
+        let pageHistory = [];
+        let currentMerchant = null;
+
+        // 初始化
+        function init() {
+            renderMerchants();
+            renderCart();
+            renderOrders();
+            updateCartCount();
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // 底部導航點擊事件
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    navigateTo(this.dataset.page);
+                });
+            });
+
+            // 從 localStorage 讀取數據
+            loadData();
+        }
+
+        // 渲染商家列表
+        function renderMerchants() {
+            const container = document.getElementById('merchant-list');
+            container.innerHTML = merchants.map(merchant => `
+                <div class="merchant-card" onclick="viewMerchant(${merchant.id})">
+                    <div class="merchant-header">
+                        <div class="merchant-icon">${merchant.icon}</div>
+                        <div class="merchant-info">
+                            <div class="merchant-name">${merchant.name}</div>
+                            <div class="merchant-category">${merchant.category}</div>
+                            <div class="merchant-rating">${merchant.rating}</div>
+                        </div>
+                    </div>
+                    <div class="merchant-tags">
+                        ${merchant.tags.map(tag => `<span class="merchant-tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="merchant-footer">
+                        <span>📍 ${merchant.distance}</span>
+                        <span>🕐 ${merchant.deliveryTime}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 查看商家商品
+        function viewMerchant(merchantId) {
+            currentMerchant = merchants.find(m => m.id === merchantId);
+            const merchantProducts = products.filter(p => p.merchantId === merchantId);
+
+            // 取得該商家的商品分類
+            const categories = [...new Set(merchantProducts.map(p => p.category))];
+
+            // 渲染分類標籤
+            const categoriesContainer = document.getElementById('product-categories');
+            categoriesContainer.innerHTML = `
+                <div class="category-tab active" onclick="filterMerchantProducts('all')">全部</div>
+                ${categories.map(cat => `
+                    <div class="category-tab" onclick="filterMerchantProducts('${cat}')">${getCategoryName(cat)}</div>
+                `).join('')}
+            `;
+
+            // 渲染商品列表
+            renderMerchantProducts('all');
+
+            // 更新標題
+            document.getElementById('page-title').textContent = currentMerchant.name;
+
+            navigateTo('merchant-products');
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                'combo': '套餐',
+                'noodles': '麵食',
+                'drinks': '飲品',
+                'main': '主食',
+                'fried': '炸物',
+                'sushi': '壽司',
+                'salad': '沙拉'
+            };
+            return names[category] || category;
+        }
+
+        // 篩選商家商品
+        function filterMerchantProducts(category) {
+            // 更新分類標籤狀態
+            document.querySelectorAll('#product-categories .category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            renderMerchantProducts(category);
+        }
+
+        // 渲染商家商品列表
+        function renderMerchantProducts(category = 'all') {
+            const container = document.getElementById('products-list');
+            const merchantProducts = products.filter(p => p.merchantId === currentMerchant.id);
+            const filteredProducts = category === 'all'
+                ? merchantProducts
+                : merchantProducts.filter(p => p.category === category);
+
+            container.innerHTML = filteredProducts.map(product => `
+                <div class="product-card" onclick="viewProduct(${product.id})">
+                    ${product.tag ? `<span class="product-tag">${product.tag}</span>` : ''}
+                    <div class="product-image" style="display: flex; align-items: center; justify-content: center; font-size: 80px;">
+                        ${product.image}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">
+                            $${product.price}
+                            ${product.originalPrice ? `<span class="original">$${product.originalPrice}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 更新時間
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+        }
+
+        // 頁面導航
+        function navigateTo(pageId) {
+            const currentPageElement = document.querySelector('.page.active');
+            const targetPageElement = document.getElementById(pageId);
+
+            if (currentPageElement === targetPageElement) return;
+
+            // 記錄歷史
+            if (currentPage !== pageId) {
+                pageHistory.push(currentPage);
+            }
+
+            // 隱藏所有頁面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active', 'slide-in');
+            });
+
+            // 顯示目標頁面
+            targetPageElement.classList.add('active', 'slide-in');
+            currentPage = pageId;
+
+            // 更新導航狀態
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === pageId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 更新標題
+            const titles = {
+                'home': '集客消費回饋平台',
+                'cart': '購物車',
+                'orders': '我的訂單',
+                'profile': '會員中心',
+                'product-detail': '商品詳情',
+                'merchant-products': currentMerchant ? currentMerchant.name : '商品列表'
+            };
+            document.getElementById('page-title').textContent = titles[pageId] || '集客消費回饋平台';
+
+            // 顯示/隱藏返回按鈕
+            const backBtn = document.querySelector('.back-btn');
+            if (pageId === 'product-detail' || pageId === 'merchant-products') {
+                backBtn.style.display = 'inline';
+            } else {
+                backBtn.style.display = 'none';
+            }
+
+            // 刷新內容
+            if (pageId === 'cart') renderCart();
+            if (pageId === 'orders') renderOrders();
+        }
+
+        // 返回
+        function goBack() {
+            if (pageHistory.length > 0) {
+                const previousPage = pageHistory.pop();
+                navigateTo(previousPage);
+            }
+        }
+
+
+        // 查看商品詳情
+        function viewProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const content = document.getElementById('product-detail-content');
+            content.innerHTML = `
+                <div class="product-detail-image" style="display: flex; align-items: center; justify-content: center; font-size: 120px;">
+                    ${product.image}
+                </div>
+                <div class="product-detail-info">
+                    ${product.tag ? `<span class="product-tag">${product.tag}</span>` : ''}
+                    <div class="product-detail-name">${product.name}</div>
+                    <div class="product-detail-price">
+                        $${product.price}
+                        ${product.originalPrice ? `<span style="font-size: 18px; color: #999; text-decoration: line-through; margin-left: 8px;">$${product.originalPrice}</span>` : ''}
+                    </div>
+                    <div class="product-detail-desc">${product.description}</div>
+                </div>
+
+                ${Object.keys(product.options).map(optionKey => `
+                    <div class="product-options">
+                        <div class="option-title">${getOptionTitle(optionKey)}</div>
+                        <div class="option-buttons">
+                            ${product.options[optionKey].map((option, index) => `
+                                <button class="option-btn ${index === 0 ? 'active' : ''}"
+                                        onclick="selectOption(this, '${optionKey}', '${option}')">
+                                    ${option}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+
+                <div class="product-detail-footer">
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                        <span class="quantity-value" id="detail-quantity">1</span>
+                        <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                    </div>
+                    <button class="add-to-cart-btn" style="flex: 1;" onclick="addToCart(${product.id})">
+                        加入購物車
+                    </button>
+                </div>
+            `;
+
+            navigateTo('product-detail');
+        }
+
+        function getOptionTitle(key) {
+            const titles = {
+                'size': '選擇大小',
+                'spicy': '辣度',
+                'ice': '冰塊',
+                'quantity': '數量'
+            };
+            return titles[key] || key;
+        }
+
+        function selectOption(button, optionKey, optionValue) {
+            // 移除同組其他按鈕的 active 狀態
+            button.parentElement.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+        }
+
+        function changeQuantity(delta) {
+            const quantityEl = document.getElementById('detail-quantity');
+            let quantity = parseInt(quantityEl.textContent);
+            quantity = Math.max(1, quantity + delta);
+            quantityEl.textContent = quantity;
+        }
+
+        // 加入購物車
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const quantity = parseInt(document.getElementById('detail-quantity').textContent);
+
+            // 收集選項
+            const selectedOptions = {};
+            document.querySelectorAll('.product-options').forEach(optionGroup => {
+                const title = optionGroup.querySelector('.option-title').textContent;
+                const selected = optionGroup.querySelector('.option-btn.active').textContent;
+                selectedOptions[title] = selected;
+            });
+
+            // 檢查購物車中是否已有相同商品（含選項）
+            const existingItem = cart.find(item =>
+                item.product.id === productId &&
+                JSON.stringify(item.options) === JSON.stringify(selectedOptions)
+            );
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    product: product,
+                    quantity: quantity,
+                    options: selectedOptions
+                });
+            }
+
+            saveData();
+            updateCartCount();
+            showToast(`已加入 ${quantity} 個商品到購物車`);
+            goBack();
+        }
+
+        // 渲染購物車
+        function renderCart() {
+            const container = document.getElementById('cart-content');
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🛒</div>
+                        <div>購物車是空的</div>
+                        <div style="margin-top: 8px; font-size: 13px;">快去挑選喜歡的商品吧！</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+
+            container.innerHTML = `
+                ${cart.map((item, index) => `
+                    <div class="cart-item">
+                        <div class="cart-item-image" style="display: flex; align-items: center; justify-content: center; font-size: 40px;">
+                            ${item.product.image}
+                        </div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.product.name}</div>
+                            ${Object.entries(item.options).map(([key, value]) =>
+                                `<div style="font-size: 12px; color: #999;">${key}: ${value}</div>`
+                            ).join('')}
+                            <div class="cart-item-price">$${item.product.price}</div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="updateCartItemQuantity(${index}, -1)">-</button>
+                                <span class="quantity-value">${item.quantity}</span>
+                                <button class="quantity-btn" onclick="updateCartItemQuantity(${index}, 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+
+                <div class="cart-summary">
+                    <div class="cart-summary-row">
+                        <span>小計</span>
+                        <span>$${subtotal}</span>
+                    </div>
+                    <div class="cart-summary-row">
+                        <span>外送費</span>
+                        <span>$30</span>
+                    </div>
+                    <div class="cart-summary-row total">
+                        <span>總計</span>
+                        <span>$${subtotal + 30}</span>
+                    </div>
+                </div>
+
+                <button class="checkout-btn" onclick="checkout()">
+                    前往結帳
+                </button>
+            `;
+        }
+
+        // 更新購物車商品數量
+        function updateCartItemQuantity(index, delta) {
+            cart[index].quantity = Math.max(1, cart[index].quantity + delta);
+
+            if (cart[index].quantity === 0) {
+                cart.splice(index, 1);
+            }
+
+            saveData();
+            updateCartCount();
+            renderCart();
+        }
+
+        // 結帳
+        function checkout() {
+            if (cart.length === 0) return;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            const total = subtotal + 30;
+
+            const order = {
+                id: 'JK' + Date.now(),
+                date: new Date().toLocaleString('zh-TW'),
+                items: [...cart],
+                subtotal: subtotal,
+                deliveryFee: 30,
+                total: total,
+                status: 'pending',
+                statusText: '待確認'
+            };
+
+            orders.unshift(order);
+            cart = [];
+
+            saveData();
+            updateCartCount();
+            showToast('訂單已送出！');
+
+            setTimeout(() => {
+                navigateTo('orders');
+            }, 1000);
+        }
+
+        // 渲染訂單列表
+        function renderOrders() {
+            const container = document.getElementById('orders-content');
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <div>還沒有訂單</div>
+                        <div style="margin-top: 8px; font-size: 13px;">快去下單吧！</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-id">訂單編號: ${order.id}</div>
+                        <div class="order-status ${order.status}">${order.statusText}</div>
+                    </div>
+                    <div class="order-items">
+                        ${order.items.map(item =>
+                            `${item.product.name} x${item.quantity}`
+                        ).join('、')}
+                    </div>
+                    <div style="font-size: 13px; color: #999; margin-bottom: 8px;">${order.date}</div>
+                    <div class="order-total">總金額: $${order.total}</div>
+                </div>
+            `).join('');
+        }
+
+        // 更新購物車數量顯示
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const badges = [
+                document.getElementById('cart-count'),
+                document.getElementById('nav-cart-count')
+            ];
+
+            badges.forEach(badge => {
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        // 顯示提示訊息
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        // 儲存數據到 localStorage
+        function saveData() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            localStorage.setItem('orders', JSON.stringify(orders));
+        }
+
+        // 從 localStorage 讀取數據
+        function loadData() {
+            const savedCart = localStorage.getItem('cart');
+            const savedOrders = localStorage.getItem('orders');
+
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartCount();
+            }
+
+            if (savedOrders) {
+                orders = JSON.parse(savedOrders);
+            }
+        }
+
+        // 初始化應用
+        init();
+    </script>
+</body>
+</html>
