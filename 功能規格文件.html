@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>外帶訂餐 App 功能規格文件</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #fff;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-top: 40px;
+            font-size: 2.5em;
+            page-break-after: avoid;
+        }
+
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 10px;
+            margin-top: 35px;
+            font-size: 2em;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            color: #2980b9;
+            margin-top: 30px;
+            font-size: 1.6em;
+            page-break-after: avoid;
+        }
+
+        h4 {
+            color: #16a085;
+            margin-top: 25px;
+            font-size: 1.3em;
+            page-break-after: avoid;
+        }
+
+        .image-container {
+            margin: 30px 0;
+            text-align: center;
+            page-break-inside: avoid;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 600px;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .caption {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e8f4f8;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 30px;
+        }
+
+        li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        p {
+            margin: 15px 0;
+            text-align: justify;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #ecf0f1;
+            margin: 40px 0;
+        }
+
+        strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            .image-container {
+                page-break-inside: avoid;
+            }
+
+            h1, h2, h3, h4 {
+                page-break-after: avoid;
+            }
+
+            table {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* 首頁樣式 */
+        body > h1:first-of-type {
+            text-align: center;
+            font-size: 3em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        body > p:nth-of-type(1),
+        body > p:nth-of-type(2),
+        body > p:nth-of-type(3),
+        body > p:nth-of-type(4) {
+            text-align: center;
+            font-size: 1.1em;
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+<p><h1>外帶訂餐 App 功能規格文件</h1></p><p><strong>專案名稱</strong>：消費分潤訂餐系統
+<strong>文件版本</strong>：v1.0
+<strong>最後更新</strong>：2025-10-16
+<strong>平台</strong>：iOS & Android App + Web 後台管理系統</p><p><hr></p><p><h2>目錄</h2></p><p>1. <a href="#專案概述">專案概述</a>
+2. <a href="#核心功能模組">核心功能模組</a>
+   - <a href="#1-點數分潤系統">點數分潤系統</a>
+   - <a href="#2-商品瀏覽與訂購">商品瀏覽與訂購</a>
+   - <a href="#3-購物車系統">購物車系統</a>
+   - <a href="#4-訂單交易管理">訂單交易管理</a>
+   - <a href="#5-推薦系統">推薦系統</a>
+   - <a href="#6-會員系統">會員系統</a>
+   - <a href="#7-商家資訊">商家資訊</a>
+   - <a href="#8-公告通知系統">公告通知系統</a>
+3. <a href="#開發時程">開發時程</a></p><p><hr></p><p><h2>專案概述</h2></p><p>本專案為一個整合消費分潤機制的外帶訂餐平台，主要特色包括：</p><p><ul><li><strong>消費分潤機制</strong>：用戶消費可獲得回饋金，商家可獲取分潤點數</li>
+<li><strong>推薦獎勵系統</strong>：用戶推薦新會員可獲得獎勵</li>
+<li><strong>多元訂購方式</strong>：支援即時訂單與預約訂單</li>
+<li><strong>公益回饋</strong>：整合公益基金捐贈功能</li>
+<li><strong>商家營運分析</strong>：提供完整的營收統計和數據分析</li>
+</ul>
+<hr></p><p><h2>核心功能模組</h2></p><p><h3>1. 點數分潤系統</h3></p><p><strong>功能說明</strong>：
+點數分潤系統是本平台的核心功能，讓消費者和商家都能從交易中獲得回饋。用戶可以查看回饋金收入、營收統計、點數記錄等資訊。</p><p><strong>包含頁面</strong>：21 個設計畫面</p><p><hr></p><p><h4>1.1 回饋金收入明細</h4></p><p><strong>功能描述</strong>：
+<ul><li>顯示用戶的回饋金收入列表</li>
+<li>包含日期、回饋金類別、訂單編號、收益金額等資訊</li>
+<li>提供本月回饋金收益總額統計</li>
+<li>支援按時間篩選和查詢</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="001_點數分潤_回饋金收入明細_LINE_ALBUM_樣式_251016_1.jpg" alt="回饋金收入明細"><p class="caption">回饋金收入明細</p></div></p><p><div class="image-container"><img src="012_點數分潤_回饋金收入明細_LINE_ALBUM_樣式_251016_2.jpg" alt="回饋金收入明細"><p class="caption">回饋金收入明細</p></div></p><p><strong>技術需求</strong>：
+<ul><li>需整合交易系統API取得回饋金資料</li>
+<li>支援即時更新</li>
+<li>提供CSV報表匯出功能</li>
+</ul>
+<hr></p><p><h4>1.2 營收統計報表</h4></p><p><strong>功能描述</strong>：
+<ul><li>提供每日、每月、每年的營收統計</li>
+<li>視覺化圖表展示營收趨勢</li>
+<li>支援多維度數據分析</li>
+<li>商家專用功能</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="023_點數分潤_營收統計-每日_LINE_ALBUM_樣式_251016_3.jpg" alt="營收統計-每日"><p class="caption">營收統計-每日</p></div></p><p><div class="image-container"><img src="027_點數分潤_營收統計-每月_LINE_ALBUM_樣式_251016_33.jpg" alt="營收統計-每月"><p class="caption">營收統計-每月</p></div></p><p><div class="image-container"><img src="029_點數分潤_營收統計-每年_LINE_ALBUM_樣式_251016_35.jpg" alt="營收統計-每年"><p class="caption">營收統計-每年</p></div></p><p><strong>技術需求</strong>：
+<ul><li>圖表庫整合（建議使用 Chart.js 或類似庫）</li>
+<li>資料快取機制提升載入速度</li>
+<li>支援日期區間選擇</li>
+</ul>
+<hr></p><p><h4>1.3 點數記錄與交易紀錄</h4></p><p><strong>功能描述</strong>：
+<ul><li>顯示永久點數和限時點數餘額</li>
+<li>詳細的點數變動記錄</li>
+<li>關聯交易訂單資訊</li>
+<li>點數有效期提醒</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="024_點數分潤_點數記錄_LINE_ALBUM_樣式_251016_30.jpg" alt="點數記錄"><p class="caption">點數記錄</p></div></p><p><div class="image-container"><img src="025_點數分潤_交易記錄_LINE_ALBUM_樣式_251016_31.jpg" alt="交易記錄"><p class="caption">交易記錄</p></div></p><p><hr></p><p><h4>1.4 營運分析選單</h4></p><p><strong>功能描述</strong>：
+<ul><li>商家營運分析功能入口</li>
+<li>提供各種統計分析工具</li>
+<li>快速導航到不同報表</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="020_點數分潤_營運分析選單_LINE_ALBUM_樣式_251016_27.jpg" alt="營運分析選單"><p class="caption">營運分析選單</p></div></p><p><hr></p><p><h4>1.5 其他分潤相關功能</h4></p><p><strong>回饋與獎勵選單</strong>：</p><p><div class="image-container"><img src="005_點數分潤_回饋與獎勵選單_LINE_ALBUM_樣式_251016_13.jpg" alt="回饋與獎勵選單"><p class="caption">回饋與獎勵選單</p></div></p><p><strong>回饋請求單</strong>：</p><p><div class="image-container"><img src="015_點數分潤_回饋請求單_LINE_ALBUM_樣式_251016_22.jpg" alt="回饋請求單"><p class="caption">回饋請求單</p></div></p><p><strong>公益回饋頁面</strong>：</p><p><div class="image-container"><img src="022_點數分潤_公益回饋頁面_LINE_ALBUM_樣式_251016_29.jpg" alt="公益回饋頁面"><p class="caption">公益回饋頁面</p></div></p><p><strong>回饋金月報表</strong>：</p><p><div class="image-container"><img src="028_點數分潤_回饋金月報表_LINE_ALBUM_樣式_251016_34.jpg" alt="回饋金月報表"><p class="caption">回饋金月報表</p></div></p><p><strong>平台商城-積分兌換</strong>：</p><p><div class="image-container"><img src="054_點數分潤_平台商城-積分兌換_LINE_ALBUM_樣式_251016_58.jpg" alt="平台商城"><p class="caption">平台商城</p></div></p><p><hr></p><p><h3>2. 商品瀏覽與訂購</h3></p><p><strong>功能說明</strong>：
+提供完整的商品瀏覽、搜尋、分類和自訂功能，讓用戶可以輕鬆找到想要的商品並進行訂購。</p><p><strong>包含頁面</strong>：9 個設計畫面</p><p><hr></p><p><h4>2.1 商品列表</h4></p><p><strong>功能描述</strong>：
+<ul><li>依商品分類顯示（套餐、河粉、麵食、精緻餐點等）</li>
+<li>顯示商品圖片、名稱、價格、原價</li>
+<li>特價標籤和人氣精選標示</li>
+<li>支援商品快速加入購物車</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="035_商品瀏覽_商品列表-套餐_LINE_ALBUM_樣式_251016_40.jpg" alt="商品列表-套餐"><p class="caption">商品列表-套餐</p></div></p><p><div class="image-container"><img src="036_商品瀏覽_商品列表-河粉_LINE_ALBUM_樣式_251016_41.jpg" alt="商品列表-河粉"><p class="caption">商品列表-河粉</p></div></p><p><div class="image-container"><img src="039_商品瀏覽_商品列表-麵食區_LINE_ALBUM_樣式_251016_44.jpg" alt="商品列表-麵食區"><p class="caption">商品列表-麵食區</p></div></p><p><strong>技術需求</strong>：
+<ul><li>商品分類系統</li>
+<li>圖片延遲載入優化</li>
+<li>商品搜尋與篩選功能</li>
+</ul>
+<hr></p><p><h4>2.2 商品詳情頁</h4></p><p><strong>功能描述</strong>：
+<ul><li>完整的商品資訊（圖片、名稱、價格、說明）</li>
+<li>商品自訂選項選擇（容量、配料、辣度等）</li>
+<li>數量調整</li>
+<li>加入購物車功能</li>
+<li>商品營養資訊和熱量標示</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="051_商品瀏覽_商品詳情頁_LINE_ALBUM_樣式_251016_55.jpg" alt="商品詳情頁"><p class="caption">商品詳情頁</p></div></p><p><hr></p><p><h4>2.3 商品自訂選項</h4></p><p><strong>功能描述</strong>：
+<ul><li>支援多種自訂選項（容量、升級瓶裝等）</li>
+<li>選項價格加成顯示</li>
+<li>必填項目標示</li>
+<li>人氣精選標記</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="048_商品瀏覽_商品自訂選項_LINE_ALBUM_樣式_251016_52.jpg" alt="商品自訂選項"><p class="caption">商品自訂選項</p></div></p><p><div class="image-container"><img src="049_商品瀏覽_商品自訂選項_LINE_ALBUM_樣式_251016_53.jpg" alt="商品自訂選項"><p class="caption">商品自訂選項</p></div></p><p><strong>技術需求</strong>：
+<ul><li>動態價格計算</li>
+<li>選項組合驗證</li>
+<li>購物車資料結構設計</li>
+</ul>
+<hr></p><p><h3>3. 購物車系統</h3></p><p><strong>功能說明</strong>：
+完整的購物車功能，支援商品管理、數量調整、公益基金捐贈等功能。</p><p><strong>包含頁面</strong>：7 個設計畫面</p><p><hr></p><p><h4>3.1 購物車頁面</h4></p><p><strong>功能描述</strong>：
+<ul><li>顯示已加入的商品列表</li>
+<li>商品圖片、名稱、規格、數量、價格</li>
+<li>支援商品數量調整和刪除</li>
+<li>顯示總金額計算</li>
+<li>繼續加點功能</li>
+<li>三步驟購物流程指示（菜單 → 購物車 → 結帳）</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="042_購物車_購物車頁面_LINE_ALBUM_樣式_251016_47.jpg" alt="購物車頁面"><p class="caption">購物車頁面</p></div></p><p><div class="image-container"><img src="057_購物車_購物車頁面_LINE_ALBUM_樣式_251016_60.jpg" alt="購物車頁面"><p class="caption">購物車頁面</p></div></p><p><strong>技術需求</strong>：
+<ul><li>購物車狀態管理</li>
+<li>即時價格計算</li>
+<li>商品庫存檢查</li>
+</ul>
+<hr></p><p><h4>3.2 購物車-公益基金捐贈</h4></p><p><strong>功能描述</strong>：
+<ul><li>整合公益基金捐贈選項</li>
+<li>用戶可選擇是否捐贈</li>
+<li>顯示公益基金資訊</li>
+<li>捐贈金額計入訂單總額</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="046_購物車_購物車頁面-公益基金_LINE_ALBUM_樣式_251016_50.jpg" alt="購物車-公益基金"><p class="caption">購物車-公益基金</p></div></p><p><strong>技術需求</strong>：
+<ul><li>公益基金模組整合</li>
+<li>捐贈記錄追蹤</li>
+<li>稅務相關處理（如需要）</li>
+</ul>
+<hr></p><p><h3>4. 訂單交易管理</h3></p><p><strong>功能說明</strong>：
+完整的訂單管理系統，包含即時訂單、預約訂單、訂單狀態追蹤等功能。</p><p><strong>包含頁面</strong>：5 個設計畫面</p><p><hr></p><p><h4>4.1 訂單列表</h4></p><p><strong>功能描述</strong>：
+<ul><li>多種訂單狀態分類：</li>
+</ul>  - 待回饋訂單
+  - 預訂待確認
+  - 歷史交易記錄
+<ul><li>訂單基本資訊顯示</li>
+<li>訂單狀態標示</li>
+<li>快速操作按鈕</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="006_訂單交易_訂單列表-待回饋_LINE_ALBUM_樣式_251016_14.jpg" alt="訂單列表-待回饋"><p class="caption">訂單列表-待回饋</p></div></p><p><div class="image-container"><img src="008_訂單交易_訂單列表-預訂待確認_LINE_ALBUM_樣式_251016_16.jpg" alt="訂單列表-預訂待確認"><p class="caption">訂單列表-預訂待確認</p></div></p><p><div class="image-container"><img src="009_訂單交易_訂單列表-歷史交易記錄_LINE_ALBUM_樣式_251016_17.jpg" alt="訂單列表-歷史交易"><p class="caption">訂單列表-歷史交易</p></div></p><p><strong>技術需求</strong>：
+<ul><li>訂單狀態機制</li>
+<li>即時通知推送</li>
+<li>訂單篩選和搜尋</li>
+</ul>
+<hr></p><p><h4>4.2 訂單明細</h4></p><p><strong>功能描述</strong>：
+<ul><li>完整的訂單詳細資訊</li>
+<li>商品列表與金額明細</li>
+<li>訂單狀態時間軸</li>
+<li>取消/修改訂單功能（視狀態而定）</li>
+</ul>
+<strong>設計圖示例（含開發標註）</strong>：</p><p><div class="image-container"><img src="052_訂單交易_訂單明細-標註版_LINE_ALBUM_樣式_251016_56.jpg" alt="訂單明細-標註版"><p class="caption">訂單明細-標註版</p></div></p><p><div class="image-container"><img src="053_訂單交易_訂單明細-標註版_LINE_ALBUM_樣式_251016_57.jpg" alt="訂單明細-標註版"><p class="caption">訂單明細-標註版</p></div></p><p><strong>技術需求</strong>：
+<ul><li>訂單詳情API</li>
+<li>訂單操作權限控制</li>
+<li>支付狀態同步</li>
+</ul>
+<hr></p><p><h3>5. 推薦系統</h3></p><p><strong>功能說明</strong>：
+完整的推薦獎勵機制，用戶可以推薦新會員加入並獲得獎勵。</p><p><strong>包含頁面</strong>：4 個設計畫面</p><p><hr></p><p><h4>5.1 推薦碼功能</h4></p><p><strong>功能描述</strong>：
+<ul><li>推薦碼輸入介面</li>
+<li>支援手動輸入或掃描QR code</li>
+<li>推薦碼驗證</li>
+<li>推薦碼生成中的載入狀態</li>
+<li>推薦成功提示</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="002_推薦系統_推薦碼輸入_LINE_ALBUM_樣式_251016_10.jpg" alt="推薦碼輸入"><p class="caption">推薦碼輸入</p></div></p><p><div class="image-container"><img src="045_推薦系統_推薦好友-生成推薦碼中_LINE_ALBUM_樣式_251016_5.jpg" alt="推薦好友-生成中"><p class="caption">推薦好友-生成中</p></div></p><p><strong>技術需求</strong>：
+<ul><li>QR code 掃描功能</li>
+<li>推薦碼生成演算法</li>
+<li>推薦關係記錄</li>
+</ul>
+<hr></p><p><h4>5.2 推薦記錄與計畫</h4></p><p><strong>功能描述</strong>：
+<ul><li>推薦好友記錄列表</li>
+<li>推薦獎勵統計</li>
+<li>特殊推薦計畫（如雄兵計畫）</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="004_推薦系統_推薦記錄列表_LINE_ALBUM_樣式_251016_12.jpg" alt="推薦記錄列表"><p class="caption">推薦記錄列表</p></div></p><p><div class="image-container"><img src="030_推薦系統_推薦計畫-雄兵計畫_LINE_ALBUM_樣式_251016_36.jpg" alt="推薦計畫"><p class="caption">推薦計畫</p></div></p><p><strong>技術需求</strong>：
+<ul><li>推薦層級追蹤</li>
+<li>獎勵計算引擎</li>
+<li>推薦成效統計</li>
+</ul>
+<hr></p><p><h3>6. 會員系統</h3></p><p><strong>功能說明</strong>：
+完整的會員功能，包含會員中心、推薦獎勵、商家專屬功能等。</p><p><strong>包含頁面</strong>：6 個設計畫面</p><p><hr></p><p><h4>6.1 會員中心首頁</h4></p><p><strong>功能描述</strong>：
+<ul><li>會員基本資訊顯示</li>
+<li>功能快速入口</li>
+<li>點數餘額顯示</li>
+<li>會員等級資訊</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="010_會員系統_會員中心首頁_LINE_ALBUM_樣式_251016_18.jpg" alt="會員中心首頁"><p class="caption">會員中心首頁</p></div></p><p><strong>技術需求</strong>：
+<ul><li>會員資料管理</li>
+<li>會員等級系統</li>
+<li>個人資料編輯功能</li>
+</ul>
+<hr></p><p><h4>6.2 會員中心-推薦獎勵</h4></p><p><strong>功能描述</strong>：
+<ul><li>推薦獎勵詳細資訊</li>
+<li>推薦碼分享功能</li>
+<li>推薦獎勵記錄</li>
+<li>我的推薦碼展示</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="016_會員系統_會員中心-推薦獎勵_LINE_ALBUM_樣式_251016_23.jpg" alt="會員中心-推薦獎勵"><p class="caption">會員中心-推薦獎勵</p></div></p><p><div class="image-container"><img src="055_會員系統_會員中心-推薦獎勵_LINE_ALBUM_樣式_251016_59.jpg" alt="會員中心-推薦獎勵"><p class="caption">會員中心-推薦獎勵</p></div></p><p><hr></p><p><h4>6.3 會員中心-商家功能</h4></p><p><strong>功能描述</strong>：
+<ul><li>商家會員專屬功能入口</li>
+<li>商家管理工具</li>
+<li>營運數據快速查看</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="019_會員系統_會員中心-商家功能_LINE_ALBUM_樣式_251016_26.jpg" alt="會員中心-商家功能"><p class="caption">會員中心-商家功能</p></div></p><p><strong>技術需求</strong>：
+<ul><li>角色權限管理（普通用戶/商家用戶）</li>
+<li>商家功能模組</li>
+</ul>
+<hr></p><p><h3>7. 商家資訊</h3></p><p><strong>功能說明</strong>：
+商家詳細資訊展示，包含商家介紹、地址、營業時間、評分等。</p><p><strong>包含頁面</strong>：3 個設計畫面</p><p><hr></p><p><h4>7.1 商家詳情頁</h4></p><p><strong>功能描述</strong>：
+<ul><li>商家基本資訊</li>
+<li>商家地址與地圖</li>
+<li>營業時間</li>
+<li>商家評分</li>
+<li>商家簡介</li>
+<li>商品分類導航</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="007_商家資訊_商家詳情頁_LINE_ALBUM_樣式_251016_15.jpg" alt="商家詳情頁"><p class="caption">商家詳情頁</p></div></p><p><strong>設計圖示例（含開發標註）</strong>：</p><p><div class="image-container"><img src="033_商家資訊_商家詳情頁-標註版_LINE_ALBUM_樣式_251016_39.jpg" alt="商家詳情頁-標註版"><p class="caption">商家詳情頁-標註版</p></div></p><p><strong>技術需求</strong>：
+<ul><li>Google Maps API 整合</li>
+<li>商家資料管理系統</li>
+<li>距離計算功能</li>
+</ul>
+<hr></p><p><h3>8. 公告通知系統</h3></p><p><strong>功能說明</strong>：
+系統公告、操作須知、規則說明等資訊展示。</p><p><strong>包含頁面</strong>：7 個設計畫面</p><p><hr></p><p><h4>8.1 外帶自取訂單通知</h4></p><p><strong>功能描述</strong>：
+<ul><li>外帶自取訂單提示</li>
+<li>訂單編號顯示</li>
+<li>取餐地點檢查提醒</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="013_公告通知_外帶自取訂單通知_LINE_ALBUM_樣式_251016_20.jpg" alt="外帶自取訂單通知"><p class="caption">外帶自取訂單通知</p></div></p><p><hr></p><p><h4>8.2 預訂自取須知</h4></p><p><strong>功能描述</strong>：
+<ul><li>預訂自取流程說明</li>
+<li>注意事項提醒</li>
+<li>使用規則說明</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="014_公告通知_預訂自取須知_LINE_ALBUM_樣式_251016_21.jpg" alt="預訂自取須知"><p class="caption">預訂自取須知</p></div></p><p><hr></p><p><h4>8.3 商家營業時間說明</h4></p><p><strong>功能描述</strong>：
+<ul><li>商家營業時間公告</li>
+<li>特殊營業時間提醒</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="018_公告通知_商家營業時間說明_LINE_ALBUM_樣式_251016_25.jpg" alt="商家營業時間說明"><p class="caption">商家營業時間說明</p></div></p><p><hr></p><p><h4>8.4 商品上架事宜說明</h4></p><p><strong>功能描述</strong>：
+<ul><li>商品上架規則說明</li>
+<li>商家端上架注意事項</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="040_公告通知_商品上架事宜說明_LINE_ALBUM_樣式_251016_45.jpg" alt="商品上架事宜說明"><p class="caption">商品上架事宜說明</p></div></p><p><strong>技術需求</strong>：
+<ul><li>公告管理系統</li>
+<li>推播通知功能</li>
+<li>富文本編輯器</li>
+</ul>
+<hr></p><p><h3>9. 其他 UI 元件</h3></p><p><h4>9.1 數量選擇器</h4></p><p><strong>功能描述</strong>：
+<ul><li>商品數量調整元件</li>
+<li>加減按鈕</li>
+<li>數量輸入</li>
+</ul>
+<strong>設計圖示例</strong>：</p><p><div class="image-container"><img src="011_其他_數量選擇器_LINE_ALBUM_樣式_251016_19.jpg" alt="數量選擇器"><p class="caption">數量選擇器</p></div></p><p><hr></p><p><h2>開發時程</h2></p><p><h3>階段一：需求討論與設計（2025/10/15 ~ 11/30）</h3></p><p><strong>工作內容</strong>：
+<ul><li>需求討論與釐清</li>
+<li>功能使用流程繪製</li>
+<li>Wireframe 交付</li>
+<li>視覺設計確認</li>
+</ul>
+<strong>交付物</strong>：
+<ul><li>功能規格文件</li>
+<li>使用流程圖</li>
+<li>UI/UX 設計稿</li>
+</ul>
+<hr></p><p><h3>階段二：Alpha 測試版開發（2025/12/31 前）</h3></p><p><strong>工作內容</strong>：
+<ul><li>iOS App Alpha 版本開發</li>
+<li>Web 後台管理系統開發</li>
+<li>TestFlight 部署</li>
+</ul>
+<strong>交付物</strong>：
+<ul><li>iOS App Alpha 測試版（TestFlight）</li>
+<li>Web 後台管理系統</li>
+</ul>
+<strong>注意事項</strong>：
+<ul><li>Apple Store 上架需申請鄧白氏認證</li>
+<li>TestFlight 需依 Apple 官方指引安裝</li>
+<li>Android App 功能比照 iOS 開發</li>
+</ul>
+<hr></p><p><h3>階段三：功能與樣式調整（2026/1/31）</h3></p><p><strong>工作內容</strong>：
+<ul><li>根據 Alpha 測試回饋調整</li>
+<li>核心功能優化</li>
+<li>UI/UX 樣式微調</li>
+</ul>
+<strong>交付物</strong>：
+<ul><li>功能調整報告</li>
+<li>優化後的測試版本</li>
+</ul>
+<hr></p><p><h3>階段四：Beta 測試發布（2026/2/10）</h3></p><p><strong>工作內容</strong>：
+<ul><li>App Store & Google Play Beta 測試發布</li>
+<li>外部測試用戶招募</li>
+<li>功能微調</li>
+</ul>
+<strong>交付物</strong>：
+<ul><li>iOS App Beta 版（App Store）</li>
+<li>Android App Beta 版（Google Play）</li>
+</ul>
+<strong>注意事項</strong>：
+<ul><li>Google Play 需 14 個不同帳戶測試用戶，測試 14 天後可通過審核</li>
+<li>Beta 測試人員由客戶方提供</li>
+</ul>
+<hr></p><p><h3>階段五：正式上架（2026/3/1）</h3></p><p><strong>工作內容</strong>：
+<ul><li>App Store / Google Play 審查通過</li>
+<li>正式版本發布</li>
+</ul>
+<strong>交付物</strong>：
+<ul><li>正式上架的 App</li>
+<li>上架文件與資料</li>
+</ul>
+<hr></p><p><h3>階段六：市場測試（2026/3/1 ~ 4/30）</h3></p><p><strong>工作內容</strong>：
+<ul><li>市場推廣測試</li>
+<li>維護既有功能</li>
+<li>不新增功能</li>
+</ul>
+<strong>交付物</strong>：
+<ul><li>維護報告</li>
+<li>使用數據分析</li>
+</ul>
+<strong>注意事項</strong>：
+<ul><li>此階段僅維護，不新增功能</li>
+<li>測試完成後正式結案交付</li>
+</ul>
+<hr></p><p><h2>技術架構建議</h2></p><p><h3>前端技術</h3>
+<ul><li><strong>App 開發</strong>：React Native / Flutter（建議）</li>
+<li><strong>Web 後台</strong>：React.js / Vue.js</li>
+<li><strong>UI 框架</strong>：Material-UI / Ant Design</li>
+</ul>
+<h3>後端技術</h3>
+<ul><li><strong>API 服務</strong>：Node.js / Python (Django/Flask)</li>
+<li><strong>資料庫</strong>：PostgreSQL / MySQL</li>
+<li><strong>快取</strong>：Redis</li>
+<li><strong>檔案儲存</strong>：AWS S3 / Google Cloud Storage</li>
+</ul>
+<h3>第三方服務</h3>
+<ul><li><strong>地圖服務</strong>：Google Maps API</li>
+<li><strong>推播通知</strong>：Firebase Cloud Messaging</li>
+<li><strong>支付整合</strong>：（待確認支付方式）</li>
+<li><strong>簡訊驗證</strong>：（待確認簡訊服務商）</li>
+</ul>
+<hr></p><p><h2>待討論事項</h2></p><p>以下項目需要進一步討論確認：</p><p><h3>1. 消費分潤制度細節</h3>
+<ul><li>商家分潤比例設定</li>
+<li>消費者等級累積規則</li>
+<li>點數有效期規則</li>
+</ul>
+<h3>2. 會員等級系統</h3>
+<ul><li>各會員等級權限設定</li>
+<li>各會員等級資格設定</li>
+<li>會員等級升降機制</li>
+</ul>
+<h3>3. 簡易菜單系統（商家端）</h3>
+<ul><li>菜單管理功能範圍</li>
+<li>商品上架流程</li>
+<li>庫存管理方式</li>
+</ul>
+<h3>4. 支付方式</h3>
+<ul><li>支援的支付方式（信用卡、行動支付等）</li>
+<li>支付串接服務商選擇</li>
+<li>點數折抵規則</li>
+</ul>
+<h3>5. 通知機制</h3>
+<ul><li>推播通知觸發時機</li>
+<li>Email 通知範圍</li>
+<li>簡訊通知使用場景</li>
+</ul>
+<hr></p><p><h2>功能統計摘要</h2></p><p>| 功能模組 | 設計圖數量 | 佔比 |
+|---------|----------|------|
+| 點數分潤系統 | 21 張 | 35.6% |
+| 商品瀏覽與訂購 | 9 張 | 15.3% |
+| 購物車系統 | 7 張 | 11.9% |
+| 公告通知系統 | 7 張 | 11.9% |
+| 會員系統 | 6 張 | 10.2% |
+| 訂單交易管理 | 5 張 | 8.5% |
+| 推薦系統 | 4 張 | 6.8% |
+| 商家資訊 | 3 張 | 5.1% |
+| 其他 UI 元件 | 1 張 | 1.7% |
+| <strong>總計</strong> | <strong>59 張</strong> | <strong>100%</strong> |</p><p><hr></p><p><h2>文件版本記錄</h2></p><p>| 版本 | 日期 | 修改內容 | 修改人 |
+|------|------|----------|--------|
+| v1.0 | 2025-10-16 | 初始版本建立，包含所有功能模組說明及設計圖 | Claude Code |</p><p><hr></p><p><strong>文件結束</strong>
+</p>
+
+<script>
+    // 自動為目錄生成連結
+    window.onload = function() {
+        console.log('文件已載入');
+    };
+</script>
+</body>
+</html>

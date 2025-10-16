@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>集客消費回饋平台 - App 原型展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        /* 手機模擬器外框 */
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+            background: #1a1a1a;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 狀態欄 */
+        .status-bar {
+            height: 44px;
+            background: #4a90e2;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 12px;
+            padding-top: 8px;
+        }
+
+        /* 頁面標題欄 */
+        .header {
+            background: #4a90e2;
+            color: white;
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* 內容區域 */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+
+        .content::-webkit-scrollbar {
+            width: 0;
+        }
+
+        /* 底部導航 */
+        .bottom-nav {
+            height: 70px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background: #f0f0f0;
+        }
+
+        .nav-item.active {
+            color: #4a90e2;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+        }
+
+        /* 頁面內容樣式 */
+        .page {
+            display: none;
+            padding: 16px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .image-display {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .image-display img {
+            width: 100%;
+            display: block;
+        }
+
+        .image-caption {
+            padding: 12px;
+            font-size: 13px;
+            color: #666;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .grid-images {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            flex: 1;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-height: 812px;
+            overflow-y: auto;
+        }
+
+        .control-panel h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .section {
+            margin-bottom: 24px;
+        }
+
+        .section h3 {
+            color: #4a90e2;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .btn:hover {
+            background: #4a90e2;
+            color: white;
+            border-color: #4a90e2;
+        }
+
+        .info-box {
+            background: #f0f7ff;
+            border-left: 4px solid #4a90e2;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .info-box h4 {
+            color: #4a90e2;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .info-box p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #4a90e2;
+            color: white;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+            .phone-mockup {
+                margin: 0 auto;
+            }
+            .control-panel {
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 手機模擬器 -->
+        <div class="phone-mockup">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+                <!-- 狀態欄 -->
+                <div class="status-bar">
+                    <span>9:41</span>
+                    <span>📶 📡 🔋</span>
+                </div>
+
+                <!-- 頁面標題 -->
+                <div class="header">
+                    <span id="page-title">集客消費回饋平台</span>
+                    <span>🔔</span>
+                </div>
+
+                <!-- 內容區域 -->
+                <div class="content">
+                    <!-- 首頁 -->
+                    <div id="home" class="page active">
+                        <div class="card">
+                            <div class="card-title">🎉 歡迎使用集客消費回饋平台</div>
+                            <div class="card-desc">
+                                這是一個互動式原型展示，您可以透過左側控制面板或底部導航切換不同功能模組。
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">✨ 平台特色</div>
+                            <div class="card-desc">
+                                • 消費分潤機制：消費即可獲得回饋金<br>
+                                • 推薦獎勵系統：推薦好友賺獎勵<br>
+                                • 多元訂購方式：即時訂單與預約訂單<br>
+                                • 公益回饋：整合公益基金捐贈<br>
+                                • 商家營運分析：完整數據分析工具
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 商品瀏覽 -->
+                    <div id="products" class="page">
+                        <div class="grid-images">
+                            <div class="image-display">
+                                <img src="035_商品瀏覽_商品列表-套餐_LINE_ALBUM_樣式_251016_40.jpg" alt="商品列表-套餐">
+                                <div class="image-caption">商品列表 - 套餐分類</div>
+                            </div>
+                            <div class="image-display">
+                                <img src="036_商品瀏覽_商品列表-河粉_LINE_ALBUM_樣式_251016_41.jpg" alt="商品列表-河粉">
+                                <div class="image-caption">商品列表 - 河粉分類</div>
+                            </div>
+                            <div class="image-display">
+                                <img src="051_商品瀏覽_商品詳情頁_LINE_ALBUM_樣式_251016_55.jpg" alt="商品詳情">
+                                <div class="image-caption">商品詳情頁面</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 購物車 -->
+                    <div id="cart" class="page">
+                        <div class="grid-images">
+                            <div class="image-display">
+                                <img src="042_購物車_購物車頁面_LINE_ALBUM_樣式_251016_47.jpg" alt="購物車">
+                                <div class="image-caption">購物車頁面</div>
+                            </div>
+                            <div class="image-display">
+                                <img src="046_購物車_購物車頁面-公益基金_LINE_ALBUM_樣式_251016_50.jpg" alt="購物車-公益基金">
+                                <div class="image-caption">購物車 - 公益基金捐贈</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 訂單 -->
+                    <div id="orders" class="page">
+                        <div class="grid-images">
+                            <div class="image-display">
+                                <img src="006_訂單交易_訂單列表-待回饋_LINE_ALBUM_樣式_251016_14.jpg" alt="訂單列表">
+                                <div class="image-caption">訂單列表 - 待回饋訂單</div>
+                            </div>
+                            <div class="image-display">
+                                <img src="052_訂單交易_訂單明細-標註版_LINE_ALBUM_樣式_251016_56.jpg" alt="訂單明細">
+                                <div class="image-caption">訂單明細頁面（含開發標註）</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 會員中心 -->
+                    <div id="profile" class="page">
+                        <div class="grid-images">
+                            <div class="image-display">
+                                <img src="010_會員系統_會員中心首頁_LINE_ALBUM_樣式_251016_18.jpg" alt="會員中心">
+                                <div class="image-caption">會員中心首頁</div>
+                            </div>
+                            <div class="image-display">
+                                <img src="016_會員系統_會員中心-推薦獎勵_LINE_ALBUM_樣式_251016_23.jpg" alt="推薦獎勵">
+                                <div class="image-caption">會員中心 - 推薦獎勵</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 底部導航 -->
+                <div class="bottom-nav">
+                    <div class="nav-item active" data-page="home">
+                        <div class="nav-icon">🏠</div>
+                        <div class="nav-label">首頁</div>
+                    </div>
+                    <div class="nav-item" data-page="products">
+                        <div class="nav-icon">🍜</div>
+                        <div class="nav-label">商品</div>
+                    </div>
+                    <div class="nav-item" data-page="cart">
+                        <div class="nav-icon">🛒</div>
+                        <div class="nav-label">購物車</div>
+                    </div>
+                    <div class="nav-item" data-page="orders">
+                        <div class="nav-icon">📋</div>
+                        <div class="nav-label">訂單</div>
+                    </div>
+                    <div class="nav-item" data-page="profile">
+                        <div class="nav-icon">👤</div>
+                        <div class="nav-label">會員</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <h2>🎮 原型操作面板</h2>
+
+            <div class="info-box">
+                <h4>💡 使用說明</h4>
+                <p>點擊下方按鈕快速跳轉到不同功能模組的設計圖展示，或使用手機底部導航切換頁面。</p>
+            </div>
+
+            <div class="section">
+                <h3>📊 點數分潤系統 <span class="badge">21 個畫面</span></h3>
+                <div class="btn-group">
+                    <button class="btn" onclick="showImage('001_點數分潤_回饋金收入明細_LINE_ALBUM_樣式_251016_1.jpg', '回饋金收入明細')">回饋金收入</button>
+                    <button class="btn" onclick="showImage('023_點數分潤_營收統計-每日_LINE_ALBUM_樣式_251016_3.jpg', '營收統計-每日')">每日營收</button>
+                    <button class="btn" onclick="showImage('027_點數分潤_營收統計-每月_LINE_ALBUM_樣式_251016_33.jpg', '營收統計-每月')">每月營收</button>
+                    <button class="btn" onclick="showImage('024_點數分潤_點數記錄_LINE_ALBUM_樣式_251016_30.jpg', '點數記錄')">點數記錄</button>
+                    <button class="btn" onclick="showImage('022_點數分潤_公益回饋頁面_LINE_ALBUM_樣式_251016_29.jpg', '公益回饋')">公益回饋</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🍜 商品瀏覽 <span class="badge">9 個畫面</span></h3>
+                <div class="btn-group">
+                    <button class="btn" onclick="navigateTo('products')">商品列表</button>
+                    <button class="btn" onclick="showImage('048_商品瀏覽_商品自訂選項_LINE_ALBUM_樣式_251016_52.jpg', '商品自訂選項')">自訂選項</button>
+                    <button class="btn" onclick="showImage('011_其他_數量選擇器_LINE_ALBUM_樣式_251016_19.jpg', '數量選擇器')">數量選擇</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🛒 購物車系統 <span class="badge">7 個畫面</span></h3>
+                <div class="btn-group">
+                    <button class="btn" onclick="navigateTo('cart')">購物車頁面</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📋 訂單管理 <span class="badge">5 個畫面</span></h3>
+                <div class="btn-group">
+                    <button class="btn" onclick="navigateTo('orders')">訂單列表</button>
+                    <button class="btn" onclick="showImage('008_訂單交易_訂單列表-預訂待確認_LINE_ALBUM_樣式_251016_16.jpg', '預訂待確認')">預訂訂單</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💎 推薦系統 <span class="badge">4 個畫面</span></h3>
+                <div class="btn-group">
+                    <button class="btn" onclick="showImage('002_推薦系統_推薦碼輸入_LINE_ALBUM_樣式_251016_10.jpg', '推薦碼輸入')">推薦碼輸入</button>
+                    <button class="btn" onclick="showImage('004_推薦系統_推薦記錄列表_LINE_ALBUM_樣式_251016_12.jpg', '推薦記錄')">推薦記錄</button>
+                    <button class="btn" onclick="showImage('030_推薦系統_推薦計畫-雄兵計畫_LINE_ALBUM_樣式_251016_36.jpg', '雄兵計畫')">雄兵計畫</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>👤 會員系統 <span class="badge">6 個畫面</span></h3>
+                <div class="btn-group">
+                    <button class="btn" onclick="navigateTo('profile')">會員中心</button>
+                    <button class="btn" onclick="showImage('019_會員系統_會員中心-商家功能_LINE_ALBUM_樣式_251016_26.jpg', '商家功能')">商家功能</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🏪 商家資訊 <span class="badge">3 個畫面</span></h3>
+                <div class="btn-group">
+                    <button class="btn" onclick="showImage('007_商家資訊_商家詳情頁_LINE_ALBUM_樣式_251016_15.jpg', '商家詳情')">商家詳情</button>
+                    <button class="btn" onclick="showImage('033_商家資訊_商家詳情頁-標註版_LINE_ALBUM_樣式_251016_39.jpg', '商家詳情標註版')">開發標註版</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>📢 公告通知 <span class="badge">7 個畫面</span></h3>
+                <div class="btn-group">
+                    <button class="btn" onclick="showImage('013_公告通知_外帶自取訂單通知_LINE_ALBUM_樣式_251016_20.jpg', '外帶自取通知')">外帶通知</button>
+                    <button class="btn" onclick="showImage('014_公告通知_預訂自取須知_LINE_ALBUM_樣式_251016_21.jpg', '預訂須知')">預訂須知</button>
+                    <button class="btn" onclick="showImage('018_公告通知_商家營業時間說明_LINE_ALBUM_樣式_251016_25.jpg', '營業時間')">營業時間</button>
+                </div>
+            </div>
+
+            <div class="info-box" style="margin-top: 24px;">
+                <h4>📱 功能統計</h4>
+                <p>
+                    • 總計 59 個設計畫面<br>
+                    • 8 大核心功能模組<br>
+                    • 支援消費者端 + 商家端<br>
+                    • 預計開發時程：2025/10 - 2026/4
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 頁面導航功能
+        function navigateTo(pageId) {
+            // 隱藏所有頁面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // 顯示目標頁面
+            document.getElementById(pageId).classList.add('active');
+
+            // 更新導航按鈕狀態
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === pageId) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 更新標題
+            const titles = {
+                'home': '集客消費回饋平台',
+                'products': '商品瀏覽',
+                'cart': '購物車',
+                'orders': '我的訂單',
+                'profile': '會員中心'
+            };
+            document.getElementById('page-title').textContent = titles[pageId] || '集客消費回饋平台';
+        }
+
+        // 底部導航點擊事件
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                navigateTo(this.dataset.page);
+            });
+        });
+
+        // 顯示單張圖片功能
+        function showImage(imageName, caption) {
+            const content = document.querySelector('.content');
+
+            // 創建臨時頁面顯示單張圖片
+            const tempPage = document.createElement('div');
+            tempPage.className = 'page active';
+            tempPage.innerHTML = `
+                <div class="image-display">
+                    <img src="${imageName}" alt="${caption}">
+                    <div class="image-caption">${caption}</div>
+                </div>
+                <div class="card">
+                    <button class="btn" onclick="navigateTo('home')" style="width: 100%;">返回首頁</button>
+                </div>
+            `;
+
+            // 隱藏其他頁面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // 移除之前的臨時頁面
+            const oldTemp = document.querySelector('.page.temp');
+            if (oldTemp) oldTemp.remove();
+
+            tempPage.classList.add('temp');
+            content.appendChild(tempPage);
+
+            // 更新標題
+            document.getElementById('page-title').textContent = caption;
+
+            // 滾動到頂部
+            content.scrollTop = 0;
+        }
+    </script>
+</body>
+</html>

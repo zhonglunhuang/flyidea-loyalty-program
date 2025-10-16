@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.pyc
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs
+*.log
+removed_files.log
+
+# Documentation (除了 HTML 原型)
+*.docx
+*.pdf
+
+# JSON mapping files (已包含在腳本中)
+image_mapping.json
+
+# 暫存檔案
+*.tmp
+*.bak
+*~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
