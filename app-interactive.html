@@ -739,6 +739,212 @@
             z-index: 1000;
             font-size: 14px;
         }
+
+        /* 回饋金收入頁面 */
+        .rewards-summary {
+            padding: 16px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: white;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .month-selector {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 13px;
+            background: white;
+        }
+
+        .reward-item {
+            background: white;
+            padding: 16px;
+            margin: 0 16px 8px;
+            border-radius: 12px;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .reward-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .reward-type {
+            font-size: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .reward-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4a90e2;
+        }
+
+        .reward-amount.positive {
+            color: #4caf50;
+        }
+
+        .reward-details {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .reward-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 推薦好友頁面 */
+        .referral-header {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            padding: 24px;
+            text-align: center;
+        }
+
+        .referral-code-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        .referral-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .referral-code {
+            font-size: 32px;
+            font-weight: bold;
+            color: #4a90e2;
+            letter-spacing: 4px;
+            margin-bottom: 16px;
+        }
+
+        .share-btn {
+            width: 100%;
+            padding: 12px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .share-btn:active {
+            background: #3a7bc8;
+        }
+
+        .referral-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 8px;
+        }
+
+        .referral-item {
+            background: white;
+            padding: 16px;
+            margin: 0 16px 8px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .referral-info {
+            flex: 1;
+        }
+
+        .referral-name {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .referral-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .referral-reward {
+            font-size: 16px;
+            font-weight: bold;
+            color: #4caf50;
+        }
     </style>
 </head>
 <body>
@@ -805,7 +1011,7 @@
                     </div>
 
                     <div class="menu-list">
-                        <div class="menu-item" onclick="showToast('功能開發中')">
+                        <div class="menu-item" onclick="navigateTo('rewards')">
                             <div class="menu-item-left">
                                 <span class="menu-item-icon">💰</span>
                                 <span class="menu-item-text">回饋金收入</span>
@@ -819,7 +1025,7 @@
                             </div>
                             <span class="menu-item-arrow">›</span>
                         </div>
-                        <div class="menu-item" onclick="showToast('功能開發中')">
+                        <div class="menu-item" onclick="navigateTo('referral')">
                             <div class="menu-item-left">
                                 <span class="menu-item-icon">💎</span>
                                 <span class="menu-item-text">推薦好友</span>
@@ -834,6 +1040,65 @@
                             <span class="menu-item-arrow">›</span>
                         </div>
                     </div>
+                </div>
+
+                <!-- 回饋金收入 -->
+                <div id="rewards" class="page">
+                    <div class="rewards-summary">
+                        <div class="summary-card">
+                            <div class="summary-label">本月回饋金收益</div>
+                            <div class="summary-value">NT$ <span id="monthly-rewards">3,850</span></div>
+                        </div>
+                        <div class="summary-stats">
+                            <div class="stat-item">
+                                <div class="stat-label">累計收益</div>
+                                <div class="stat-value">NT$ 18,920</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">本月交易</div>
+                                <div class="stat-value">28 筆</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-header">
+                        <span class="section-title">收入明細</span>
+                        <select class="month-selector" onchange="filterRewards(this.value)">
+                            <option value="2025-10">2025年10月</option>
+                            <option value="2025-09">2025年9月</option>
+                            <option value="2025-08">2025年8月</option>
+                        </select>
+                    </div>
+
+                    <div id="rewards-list"></div>
+                </div>
+
+                <!-- 推薦好友 -->
+                <div id="referral" class="page">
+                    <div class="referral-header">
+                        <div class="referral-code-card">
+                            <div class="referral-label">我的推薦碼</div>
+                            <div class="referral-code">JK2024</div>
+                            <button class="share-btn" onclick="showToast('推薦碼已複製')">分享推薦碼</button>
+                        </div>
+                    </div>
+
+                    <div class="referral-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">累計推薦人數</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">NT$ 1,200</div>
+                            <div class="stat-label">推薦獎勵</div>
+                        </div>
+                    </div>
+
+                    <div class="section-header">
+                        <span class="section-title">推薦記錄</span>
+                    </div>
+
+                    <div id="referral-list"></div>
                 </div>
             </div>
 
@@ -1034,11 +1299,84 @@
         let pageHistory = [];
         let currentMerchant = null;
 
+        // 回饋金記錄
+        const rewardsData = [
+            { date: '2025-10-16', type: '消費回饋', amount: 85, orderNo: 'JK1729123456', merchant: '阿美越南河粉' },
+            { date: '2025-10-15', type: '推薦獎勵', amount: 100, orderNo: '-', merchant: '推薦好友註冊' },
+            { date: '2025-10-14', type: '消費回饋', amount: 120, orderNo: 'JK1729023456', merchant: '老王滷味小舖' },
+            { date: '2025-10-13', type: '消費回饋', amount: 65, orderNo: 'JK1728923456', merchant: '珍珠奶茶專門店' },
+            { date: '2025-10-12', type: '分潤回饋', amount: 230, orderNo: 'JK1728823456', merchant: '商家分潤' },
+            { date: '2025-10-11', type: '消費回饋', amount: 95, orderNo: 'JK1728723456', merchant: '香雞排炸物' },
+            { date: '2025-10-10', type: '推薦獎勵', amount: 100, orderNo: '-', merchant: '推薦好友首購' },
+            { date: '2025-10-09', type: '消費回饋', amount: 150, orderNo: 'JK1728523456', merchant: '日式壽司專賣' },
+            { date: '2025-10-08', type: '消費回饋', amount: 75, orderNo: 'JK1728423456', merchant: '健康輕食坊' },
+            { date: '2025-10-07', type: '分潤回饋', amount: 180, orderNo: 'JK1728323456', merchant: '商家分潤' },
+            { date: '2025-10-06', type: '消費回饋', amount: 110, orderNo: 'JK1728223456', merchant: '阿美越南河粉' },
+            { date: '2025-10-05', type: '消費回饋', amount: 90, orderNo: 'JK1728123456', merchant: '老王滷味小舖' },
+            { date: '2025-10-04', type: '推薦獎勵', amount: 100, orderNo: '-', merchant: '推薦好友註冊' },
+            { date: '2025-10-03', type: '消費回饋', amount: 125, orderNo: 'JK1727923456', merchant: '香雞排炸物' },
+            { date: '2025-10-02', type: '消費回饋', amount: 85, orderNo: 'JK1727823456', merchant: '珍珠奶茶專門店' },
+        ];
+
+        // 推薦記錄
+        const referralData = [
+            { name: '王小明', date: '2025-10-15', reward: 100, status: '已領取' },
+            { name: '李小華', date: '2025-10-10', reward: 100, status: '已領取' },
+            { name: '張小美', date: '2025-10-04', reward: 100, status: '已領取' },
+            { name: '陳小強', date: '2025-09-28', reward: 100, status: '已領取' },
+            { name: '林小玲', date: '2025-09-22', reward: 100, status: '已領取' },
+            { name: '黃小芳', date: '2025-09-15', reward: 100, status: '已領取' },
+            { name: '吳小剛', date: '2025-09-08', reward: 100, status: '已領取' },
+            { name: '周小文', date: '2025-08-30', reward: 100, status: '已領取' },
+            { name: '鄭小傑', date: '2025-08-22', reward: 100, status: '已領取' },
+            { name: '劉小雯', date: '2025-08-15', reward: 100, status: '已領取' },
+            { name: '蔡小明', date: '2025-08-08', reward: 100, status: '已領取' },
+            { name: '楊小玉', date: '2025-07-28', reward: 100, status: '已領取' },
+        ];
+
+        // 渲染回饋金列表
+        function renderRewards(month = '2025-10') {
+            const container = document.getElementById('rewards-list');
+            const filtered = rewardsData.filter(r => r.date.startsWith(month));
+
+            container.innerHTML = filtered.map(reward => `
+                <div class="reward-item">
+                    <div class="reward-header">
+                        <span class="reward-type">${reward.type}</span>
+                        <span class="reward-amount positive">+NT$ ${reward.amount}</span>
+                    </div>
+                    <div class="reward-details">商家：${reward.merchant}</div>
+                    <div class="reward-details">訂單編號：${reward.orderNo}</div>
+                    <div class="reward-date">${reward.date}</div>
+                </div>
+            `).join('');
+        }
+
+        function filterRewards(month) {
+            renderRewards(month);
+        }
+
+        // 渲染推薦記錄列表
+        function renderReferrals() {
+            const container = document.getElementById('referral-list');
+            container.innerHTML = referralData.map(referral => `
+                <div class="referral-item">
+                    <div class="referral-info">
+                        <div class="referral-name">${referral.name}</div>
+                        <div class="referral-date">${referral.date} 註冊</div>
+                    </div>
+                    <div class="referral-reward">+NT$ ${referral.reward}</div>
+                </div>
+            `).join('');
+        }
+
         // 初始化
         function init() {
             renderMerchants();
             renderCart();
             renderOrders();
+            renderRewards();
+            renderReferrals();
             updateCartCount();
             updateTime();
             setInterval(updateTime, 1000);
@@ -1197,13 +1535,15 @@
                 'orders': '我的訂單',
                 'profile': '會員中心',
                 'product-detail': '商品詳情',
-                'merchant-products': currentMerchant ? currentMerchant.name : '商品列表'
+                'merchant-products': currentMerchant ? currentMerchant.name : '商品列表',
+                'rewards': '回饋金收入',
+                'referral': '推薦好友'
             };
             document.getElementById('page-title').textContent = titles[pageId] || '集客消費回饋平台';
 
             // 顯示/隱藏返回按鈕
             const backBtn = document.querySelector('.back-btn');
-            if (pageId === 'product-detail' || pageId === 'merchant-products') {
+            if (pageId === 'product-detail' || pageId === 'merchant-products' || pageId === 'rewards' || pageId === 'referral') {
                 backBtn.style.display = 'inline';
             } else {
                 backBtn.style.display = 'none';
